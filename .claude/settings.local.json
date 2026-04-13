@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/deepak.sharma/dev-repos/playground/**)",
+      "Bash(mv website-motion/resume.md /tmp/resume.md)",
+      "Bash(npx create-next-app@14 website-motion --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git)"
+    ]
+  }
+}
