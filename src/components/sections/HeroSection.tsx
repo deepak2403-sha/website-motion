@@ -344,7 +344,7 @@ export const HeroSection = () => {
                 GitHub
               </motion.a>
               <motion.a
-                href="https://linkedin.com/in/deepak-sharma"
+                href="https://www.linkedin.com/in/deepaksharma2403/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn profile"

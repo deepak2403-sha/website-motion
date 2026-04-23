@@ -22,8 +22,8 @@ const links = [
   },
   {
     label: "LinkedIn",
-    value: "linkedin.com/in/deepak-sharma",
-    href: "https://linkedin.com/in/deepak-sharma",
+    value: "linkedin.com/in/deepaksharma2403",
+    href: "https://www.linkedin.com/in/deepaksharma2403/",
     icon: LinkedinIcon,
     description: "Professional profile",
   },

@@ -47,8 +47,8 @@ export function SplineSection() {
                 <a href="https://github.com/dsharma04724" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                   github.com/dsharma04724
                 </a>
-                <a href="https://linkedin.com/in/deepak-sharma" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                  linkedin.com/in/deepak-sharma
+                <a href="https://www.linkedin.com/in/deepaksharma2403/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  linkedin.com/in/deepaksharma2403
                 </a>
               </div>
             </div>
