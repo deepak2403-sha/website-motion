@@ -123,14 +123,16 @@ const TerminalMockup = () => (
         <span className="text-zinc-300">: </span>
         <span className="text-orange-400">3</span>
         <span className="text-zinc-300">, </span>
-        <span className="text-zinc-500">{`// years`}</span>
+        <span className="text-zinc-500">{`// years @ Bangalore`}</span>
       </div>
       <div className="pl-4">
         <span className="text-purple-400">stack</span>
         <span className="text-zinc-300">: [</span>
+        <span className="text-amber-300">&quot;Java&quot;</span>
+        <span className="text-zinc-300">, </span>
         <span className="text-amber-300">&quot;Node.js&quot;</span>
         <span className="text-zinc-300">, </span>
-        <span className="text-amber-300">&quot;Java&quot;</span>
+        <span className="text-amber-300">&quot;TypeScript&quot;</span>
         <span className="text-zinc-300">, </span>
         <span className="text-amber-300">&quot;Kafka&quot;</span>
         <span className="text-zinc-300">],</span>
@@ -140,15 +142,19 @@ const TerminalMockup = () => (
         <span className="text-zinc-300">: [</span>
       </div>
       <div className="pl-8">
-        <span className="text-amber-300">&quot;Distributed Systems&quot;</span>
+        <span className="text-amber-300">&quot;Distributed Systems &amp; Microservices&quot;</span>
         <span className="text-zinc-300">,</span>
       </div>
       <div className="pl-8">
-        <span className="text-amber-300">&quot;PCI-DSS / Fintech&quot;</span>
+        <span className="text-amber-300">&quot;PCI-DSS / HSM / EMV / ISO 8583&quot;</span>
         <span className="text-zinc-300">,</span>
       </div>
       <div className="pl-8">
-        <span className="text-amber-300">&quot;LLM Tooling &amp; RAG&quot;</span>
+        <span className="text-amber-300">&quot;LLM Tooling &amp; RAG Pipelines&quot;</span>
+        <span className="text-zinc-300">,</span>
+      </div>
+      <div className="pl-8">
+        <span className="text-amber-300">&quot;Event-Driven Architecture&quot;</span>
         <span className="text-zinc-300">,</span>
       </div>
       <div className="pl-4"><span className="text-zinc-300">],</span></div>
@@ -157,10 +163,11 @@ const TerminalMockup = () => (
         <span className="text-zinc-300">: {"{"}</span>
       </div>
       <div className="pl-8">
-        <span className="text-purple-400">prReviewTime</span>
+        <span className="text-purple-400">reviewTime</span>
         <span className="text-zinc-300">: </span>
         <span className="text-amber-300">&quot;4h → 2h&quot;</span>
-        <span className="text-zinc-300">,</span>
+        <span className="text-zinc-300">, </span>
+        <span className="text-zinc-500">{`// 300+ PRs automated`}</span>
       </div>
       <div className="pl-8">
         <span className="text-purple-400">costSaved</span>
@@ -170,8 +177,17 @@ const TerminalMockup = () => (
       </div>
       <div className="pl-8">
         <span className="text-purple-400">throughput</span>
+        <span className="text-zinc-300">: </span>
         <span className="text-amber-300">&quot;3x&quot;</span>
-        <span className="text-zinc-300">,</span>
+        <span className="text-zinc-300">, </span>
+        <span className="text-zinc-500">{`// ops overhead -60%`}</span>
+      </div>
+      <div className="pl-8">
+        <span className="text-purple-400">merchants</span>
+        <span className="text-zinc-300">: </span>
+        <span className="text-orange-400">100</span>
+        <span className="text-zinc-300">, </span>
+        <span className="text-zinc-500">{`// onboarded`}</span>
       </div>
       <div className="pl-4"><span className="text-zinc-300">{"}"}</span></div>
       <div><span className="text-zinc-300">{"}"}</span></div>
