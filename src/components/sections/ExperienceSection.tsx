@@ -2,6 +2,7 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "farmer-motion";
 import { Briefcase, Calendar } from "lucide-react";
+import { use3DTilt } from "@/hooks/use3DTilt";
 
 const experiences = [
   {
@@ -34,6 +35,104 @@ const experiences = [
     tags: ["Node.js", "MongoDB", "MySQL", "REST APIs"],
   },
 ];
+
+type Experience = typeof experiences[0];
+
+const ExperienceCard3D = ({
+  exp,
+  i,
+  isInView,
+}: {
+  exp: Experience;
+  i: number;
+  isInView: boolean;
+}) => {
+  const { rotateX, rotateY, handleMouseMove, handleMouseLeave } = use3DTilt(5);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={isInView ? { opacity: 1, x: 0 } : {}}
+      transition={{
+        duration: 0.7,
+        delay: 0.25 + i * 0.18,
+        type: "spring",
+        stiffness: 160,
+        damping: 22,
+      }}
+      className="relative pl-12 md:pl-20"
+    >
+      {/* Timeline dot */}
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={isInView ? { scale: 1 } : {}}
+        transition={{ duration: 0.35, delay: 0.45 + i * 0.18, type: "spring", stiffness: 400, damping: 20 }}
+        className="absolute left-[11px] md:left-[23px] top-6 w-5 h-5 rounded-full border-2 border-blue-500 bg-zinc-950 flex items-center justify-center"
+      >
+        <Briefcase className="w-2.5 h-2.5 text-blue-400" />
+      </motion.div>
+
+      <div style={{ perspective: "900px" }}>
+        <motion.div
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{ rotateX, rotateY }}
+          className="p-6 md:p-8 rounded-2xl border border-zinc-800 bg-zinc-950/50 hover:border-zinc-700 transition-colors duration-300"
+        >
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-xl font-bold text-white">{exp.company}</h3>
+                {exp.current && (
+                  <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs font-medium">
+                    Current
+                  </span>
+                )}
+              </div>
+              <div className="text-zinc-400 font-medium">{exp.role}</div>
+            </div>
+            <div className="flex flex-col items-start md:items-end gap-1">
+              <div className="flex items-center gap-1.5 text-zinc-500 text-sm">
+                <Calendar className="w-3.5 h-3.5" />
+                {exp.period}
+              </div>
+              <div className="text-zinc-600 text-sm">{exp.location}</div>
+            </div>
+          </div>
+
+          <ul className="space-y-2 mb-5">
+            {exp.highlights.map((h, j) => (
+              <motion.li
+                key={j}
+                initial={{ opacity: 0, x: -16 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.4 + i * 0.18 + j * 0.04 }}
+                className="flex gap-3 text-sm text-zinc-400 leading-relaxed"
+              >
+                <span className="text-blue-500 mt-1 shrink-0">▸</span>
+                <span>{h}</span>
+              </motion.li>
+            ))}
+          </ul>
+
+          <div className="flex flex-wrap gap-2">
+            {exp.tags.map((tag, j) => (
+              <motion.span
+                key={tag}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ duration: 0.3, delay: 0.5 + i * 0.18 + j * 0.04, type: "spring", stiffness: 300, damping: 20 }}
+                className="px-2.5 py-1 rounded-md bg-zinc-800 text-zinc-400 text-xs font-medium border border-zinc-700"
+              >
+                {tag}
+              </motion.span>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
 
 export const ExperienceSection = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -84,82 +183,7 @@ export const ExperienceSection = () => {
 
           <div className="space-y-10">
             {experiences.map((exp, i) => (
-              <motion.div
-                key={exp.company}
-                initial={{ opacity: 0, x: -50, rotateY: -18 }}
-                animate={isInView ? { opacity: 1, x: 0, rotateY: 0 } : {}}
-                transition={{
-                  duration: 0.7,
-                  delay: 0.25 + i * 0.18,
-                  type: "spring",
-                  stiffness: 160,
-                  damping: 22,
-                }}
-                style={{ transformPerspective: 900 }}
-                className="relative pl-12 md:pl-20"
-              >
-                {/* Timeline dot — pops in after the card */}
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={isInView ? { scale: 1 } : {}}
-                  transition={{ duration: 0.35, delay: 0.45 + i * 0.18, type: "spring", stiffness: 400, damping: 20 }}
-                  className="absolute left-[11px] md:left-[23px] top-6 w-5 h-5 rounded-full border-2 border-blue-500 bg-zinc-950 flex items-center justify-center"
-                >
-                  <Briefcase className="w-2.5 h-2.5 text-blue-400" />
-                </motion.div>
-
-                <div className="p-6 md:p-8 rounded-2xl border border-zinc-800 bg-zinc-950/50 hover:border-zinc-700 transition-colors duration-300">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-xl font-bold text-white">{exp.company}</h3>
-                        {exp.current && (
-                          <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs font-medium">
-                            Current
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-zinc-400 font-medium">{exp.role}</div>
-                    </div>
-                    <div className="flex flex-col items-start md:items-end gap-1">
-                      <div className="flex items-center gap-1.5 text-zinc-500 text-sm">
-                        <Calendar className="w-3.5 h-3.5" />
-                        {exp.period}
-                      </div>
-                      <div className="text-zinc-600 text-sm">{exp.location}</div>
-                    </div>
-                  </div>
-
-                  <ul className="space-y-2 mb-5">
-                    {exp.highlights.map((h, j) => (
-                      <motion.li
-                        key={j}
-                        initial={{ opacity: 0, x: -16 }}
-                        animate={isInView ? { opacity: 1, x: 0 } : {}}
-                        transition={{ duration: 0.4, delay: 0.4 + i * 0.18 + j * 0.04 }}
-                        className="flex gap-3 text-sm text-zinc-400 leading-relaxed"
-                      >
-                        <span className="text-blue-500 mt-1 shrink-0">▸</span>
-                        <span>{h}</span>
-                      </motion.li>
-                    ))}
-                  </ul>
-
-                  <div className="flex flex-wrap gap-2">
-                    {exp.tags.map((tag, j) => (
-                      <motion.span
-                        key={tag}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                        transition={{ duration: 0.3, delay: 0.5 + i * 0.18 + j * 0.04, type: "spring", stiffness: 300, damping: 20 }}
-                        className="px-2.5 py-1 rounded-md bg-zinc-800 text-zinc-400 text-xs font-medium border border-zinc-700"
-                      >
-                        {tag}
-                      </motion.span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
+              <ExperienceCard3D key={exp.company} exp={exp} i={i} isInView={isInView} />
             ))}
           </div>
         </div>
