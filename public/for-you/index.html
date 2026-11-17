@@ -123,7 +123,8 @@
   .line { display: block; clip-path: inset(0 100% 0 0); }
   .paper.show .line { animation: write 1s ease-out forwards; animation-delay: calc(.9s + var(--i) * .75s); }
   .from { margin-top: 26px !important; text-align: left; font-size: 1.15em; }
-  .from .name { color: var(--rose); }
+  .from .name, .to .name { color: var(--rose); }
+  .to { margin-bottom: 14px !important; text-align: left; font-size: 1.15em; }
   .tape { position: absolute; top: -16px; left: 50%; width: 96px; height: 28px; translate: -50% 0; rotate: 4deg; background: rgba(246,243,236,.75); border: 2px dashed rgba(61,56,54,.25); }
 
   /* ---------- Sections after the letter ---------- */
@@ -196,7 +197,7 @@
 <main>
   <section class="intro">
     <p class="eyebrow rise">for the one having a rough day</p>
-    <h1 class="rise d1">Hey you <span class="wave">👋</span><br>I wrote you a little letter.</h1>
+    <h1 class="rise d1">Hey Rashi <span class="wave">👋</span><br>I wrote you a little letter.</h1>
     <button class="envelope rise d2" id="envelope" aria-label="Open the letter">
       <span class="env-back"></span>
       <span class="peek"></span>
@@ -210,6 +211,7 @@
   <section class="letter-wrap" id="letterWrap" hidden>
     <article class="paper" id="paper" aria-label="Letter">
       <span class="tape" aria-hidden="true"></span>
+      <p class="to"><span class="line" style="--i:-1">Dear <span class="name">Rashi</span>,</span></p>
       <p>
         <span class="line" style="--i:0">Please don't forget to</span>
         <span class="line" style="--i:1">be proud of yourself,</span>
