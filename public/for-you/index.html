@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>A Letter For You</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#F6CBBC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Nunito:wght@500;700;800&display=swap">
+<style>
+  /* Layout: one narrow centered column, like a phone-sized love note. Envelope first, then little gifts stacked below. */
+  :root {
+    --bg: #F6CBBC;          /* peach backdrop from the original card */
+    --bg-deep: #EFB5A3;
+    --paper: #DE9A78;       /* the letter */
+    --paper-edge: #C47E5E;
+    --ink: #5E1F1C;         /* maroon handwriting */
+    --envelope: #F6F3EC;
+    --stroke: #3D3836;
+    --rose: #E04F67;        /* hearts */
+    --text: #4A2420;
+    --muted: #8A5247;
+    --font-hand: "Gochi Hand", "Comic Sans MS", "Segoe Print", cursive;
+    --font-ui: "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+  #sky { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+  main {
+    position: relative; z-index: 1;
+    max-width: 460px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 28px 56px;
+    display: flex; flex-direction: column; gap: 64px;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible { outline: 3px dashed var(--rose); outline-offset: 4px; }
+
+  /* ---------- Intro + envelope ---------- */
+  .intro { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; min-height: calc(100dvh - 60px); justify-content: center; }
+  .eyebrow { margin: 0; font-weight: 800; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font-family: var(--font-hand); font-weight: 400; font-size: clamp(2.3rem, 10vw, 3rem); line-height: 1.05; color: var(--ink); text-wrap: balance; }
+  h1 .wave { display: inline-block; animation: wave 2.4s ease-in-out infinite; transform-origin: 70% 80%; }
+  .rise { animation: rise .9s cubic-bezier(.2,.8,.2,1) both; }
+  .rise.d1 { animation-delay: .15s } .rise.d2 { animation-delay: .35s } .rise.d3 { animation-delay: .6s }
+
+  .envelope {
+    position: relative; width: min(84vw, 330px); aspect-ratio: 4 / 3;
+    border: 0; background: none; padding: 0; margin-top: 22px;
+    perspective: 900px;
+    animation: bob 3.2s ease-in-out infinite;
+  }
+  .envelope:disabled { cursor: default; }
+  .env-back, .env-front, .env-flap { position: absolute; inset: 0; }
+  .env-back { background: var(--envelope); border: 5px solid var(--stroke); border-radius: 10px; }
+  .env-front { z-index: 3; }
+  .env-front::before, .env-front::after { content: ""; position: absolute; clip-path: polygon(0 34%, 50% 70%, 100% 34%, 100% 100%, 0 100%); }
+  .env-front::before { inset: 0; background: var(--stroke); border-radius: 10px; }
+  .env-front::after { inset: 5px; background: var(--envelope); border-radius: 6px; }
+  .env-flap {
+    z-index: 4; height: 72%;
+    transform-origin: top center; transform: rotateX(0deg);
+    transition: transform .7s cubic-bezier(.5,0,.3,1), z-index 0s .35s;
+    filter: drop-shadow(0 3px 0 var(--stroke));
+  }
+  .env-flap::before {
+    content: ""; position: absolute; inset: 0;
+    background: var(--stroke);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+  .env-flap::after {
+    content: ""; position: absolute; inset: 5px 7px 9px;
+    background: #ECE6DA;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+  .seal {
+    position: absolute; z-index: 5; left: 50%; top: 66%; translate: -50% -50%;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--rose); color: #fff; display: grid; place-items: center;
+    font-size: 1.5rem; box-shadow: 0 4px 0 #A9344A;
+    animation: pulse 1.6s ease-in-out infinite;
+    transition: opacity .3s, scale .3s;
+  }
+  .peek {
+    position: absolute; z-index: 2; left: 9%; right: 9%; top: 10%; bottom: 6%;
+    background: var(--paper); border: 5px solid var(--paper-edge); border-radius: 6px;
+    transition: transform .9s cubic-bezier(.2,.8,.2,1) .45s;
+  }
+  .peek::before, .peek::after { content: ""; position: absolute; left: 14%; right: 14%; height: 4px; border-radius: 4px; background: rgba(94,31,28,.35); }
+  .peek::before { top: 18% } .peek::after { top: 30%; right: 30% }
+  .envelope.open { animation: none; }
+  .envelope.open .env-flap { transform: rotateX(180deg); z-index: 1; }
+  .envelope.open .seal { opacity: 0; scale: .4; animation: none; }
+  .envelope.open .peek { transform: translateY(-58%); }
+  .hint { margin: 0; font-weight: 700; color: var(--muted); font-size: .95rem; animation: blink 2s ease-in-out infinite; }
+
+  /* ---------- The letter ---------- */
+  .letter-wrap { display: grid; place-items: center; scroll-margin-top: 24px; }
+  .paper {
+    position: relative; width: 100%;
+    background: var(--paper);
+    border: 7px solid var(--paper-edge); border-radius: 10px 18px 12px 8px;
+    padding: 34px 26px 28px;
+    rotate: -3deg;
+    box-shadow: 0 18px 40px -18px rgba(94,31,28,.55);
+    font-family: var(--font-hand); color: var(--ink);
+    font-size: clamp(1.45rem, 6.6vw, 1.75rem); line-height: 1.35; text-align: center;
+  }
+  .paper.show { animation: paperIn 1s cubic-bezier(.2,.9,.25,1.15) both; }
+  .paper p { margin: 0; }
+  .line { display: block; clip-path: inset(0 100% 0 0); }
+  .paper.show .line { animation: write 1s ease-out forwards; animation-delay: calc(.9s + var(--i) * .75s); }
+  .from { margin-top: 26px !important; text-align: left; font-size: 1.15em; }
+  .from .name { color: var(--rose); }
+  .tape { position: absolute; top: -16px; left: 50%; width: 96px; height: 28px; translate: -50% 0; rotate: 4deg; background: rgba(246,243,236,.75); border: 2px dashed rgba(61,56,54,.25); }
+
+  /* ---------- Sections after the letter ---------- */
+  .more { display: flex; flex-direction: column; gap: 64px; }
+  .more.reveal > * { animation: rise .9s cubic-bezier(.2,.8,.2,1) both; }
+  h2 { margin: 0 0 6px; font-family: var(--font-hand); font-weight: 400; font-size: 2.1rem; line-height: 1.1; color: var(--ink); text-wrap: balance; }
+  .sub { margin: 0 0 20px; color: var(--muted); font-weight: 700; line-height: 1.5; }
+
+  .cards { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .card { display: block; width: 100%; border: 0; padding: 0; background: none; height: 132px; perspective: 900px; text-align: left; }
+  .card-inner { display: block; position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,1.4,.5,1); }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 16px; border: 4px solid var(--stroke); padding: 16px 18px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+  .front { background: var(--envelope); }
+  .front .label { font-family: var(--font-hand); font-size: 1.6rem; color: var(--ink); line-height: 1.1; }
+  .front .tap { font-size: .8rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .back { background: var(--paper); border-color: var(--paper-edge); transform: rotateY(180deg); color: var(--ink); font-weight: 700; line-height: 1.45; font-size: 1.02rem; }
+  .card:nth-child(odd) { rotate: -1.2deg } .card:nth-child(even) { rotate: 1.2deg }
+
+  /* breathe */
+  .breathe { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .bubble-wrap { position: relative; width: 230px; height: 230px; display: grid; place-items: center; margin-top: 8px; }
+  .ring { position: absolute; inset: 0; border-radius: 50%; border: 4px dashed var(--paper-edge); opacity: .55; animation: spin 30s linear infinite; }
+  .bubble { width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #F9DCCF, var(--paper)); border: 5px solid var(--paper-edge); display: grid; place-items: center; scale: .8; transition: scale 4s ease-in-out; }
+  .bubble.in { scale: 1.75; }
+  .bubble.hold { scale: 1.75; transition-duration: .2s; }
+  .bubble span { display: block; font-family: var(--font-hand); color: var(--ink); font-size: 1.25rem; scale: 1.25; transition: scale 4s ease-in-out; }
+  .bubble.in span, .bubble.hold span { scale: .6; }
+  .bubble.hold span { transition-duration: .2s; }
+  .breath-step { margin-top: 18px; font-weight: 800; color: var(--muted); min-height: 1.5em; }
+
+  /* hug */
+  .hug { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .hug-btn {
+    margin-top: 6px; border: 4px solid var(--stroke); background: var(--rose); color: #fff;
+    font-family: var(--font-hand); font-size: 1.9rem; padding: 14px 34px 12px; border-radius: 999px;
+    box-shadow: 0 6px 0 var(--stroke); transition: translate .1s, box-shadow .1s;
+  }
+  .hug-btn:active { translate: 0 5px; box-shadow: 0 1px 0 var(--stroke); }
+  .hug-count { margin-top: 18px; font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .hug-note { margin-top: 8px; font-family: var(--font-hand); font-size: 1.45rem; color: var(--ink); min-height: 2.8em; text-wrap: balance; line-height: 1.2; }
+  .hug-note.pop { animation: pop .45s cubic-bezier(.3,1.6,.5,1); }
+
+  footer { text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  footer .big { font-family: var(--font-hand); font-size: 2.2rem; color: var(--ink); line-height: 1.1; text-wrap: balance; margin: 0; }
+  footer .sig { margin: 0; color: var(--muted); font-weight: 700; }
+  .again { margin-top: 6px; border: 3px solid var(--stroke); background: var(--envelope); border-radius: 999px; padding: 10px 20px; font-weight: 800; }
+
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg) } 50% { transform: translateY(-10px) rotate(2deg) } }
+  @keyframes pulse { 0%,100% { scale: 1 } 50% { scale: 1.12 } }
+  @keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: .45 } }
+  @keyframes wave { 0%,60%,100% { rotate: 0deg } 10%,30% { rotate: 16deg } 20%,40% { rotate: -8deg } }
+  @keyframes rise { from { opacity: 0; transform: translateY(18px) } to { opacity: 1; transform: none } }
+  @keyframes write { to { clip-path: inset(0 0 0 0) } }
+  @keyframes paperIn { from { opacity: 0; transform: translateY(80px) scale(.6); rotate: 8deg } to { opacity: 1; transform: none } }
+  @keyframes spin { to { rotate: 360deg } }
+  @keyframes pop { from { scale: .7; opacity: .2 } to { scale: 1; opacity: 1 } }
+
+  @media (min-width: 520px) { .cards { grid-template-columns: 1fr 1fr; } .card { height: 170px; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
+    .line { clip-path: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<main>
+  <section class="intro">
+    <p class="eyebrow rise">for the one having a rough day</p>
+    <h1 class="rise d1">Hey you <span class="wave">👋</span><br>I wrote you a little letter.</h1>
+    <button class="envelope rise d2" id="envelope" aria-label="Open the letter">
+      <span class="env-back"></span>
+      <span class="peek"></span>
+      <span class="env-front"></span>
+      <span class="env-flap"></span>
+      <span class="seal">♥</span>
+    </button>
+    <p class="hint rise d3" id="hint">tap the envelope</p>
+  </section>
+
+  <section class="letter-wrap" id="letterWrap" hidden>
+    <article class="paper" id="paper" aria-label="Letter">
+      <span class="tape" aria-hidden="true"></span>
+      <p>
+        <span class="line" style="--i:0">Please don't forget to</span>
+        <span class="line" style="--i:1">be proud of yourself,</span>
+        <span class="line" style="--i:2">because you're my</span>
+        <span class="line" style="--i:3">favourite person.</span>
+        <span class="line" style="--i:4">And I hope you see</span>
+        <span class="line" style="--i:5">how amazing you</span>
+        <span class="line" style="--i:6">truly are.</span>
+      </p>
+      <p class="from"><span class="line" style="--i:7.4">From: <span class="name">Deepak ♥</span></span></p>
+    </article>
+  </section>
+
+  <div class="more" id="more" hidden>
+    <section aria-labelledby="remember-h">
+      <h2 id="remember-h">Things to remember today</h2>
+      <p class="sub">Tap each note to read it.</p>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section class="breathe" aria-labelledby="breathe-h">
+      <h2 id="breathe-h">Breathe with me for a sec</h2>
+      <p class="sub">Follow the bubble. In, hold, and let it all out.</p>
+      <div class="bubble-wrap">
+        <div class="ring"></div>
+        <div class="bubble" id="bubble"><span id="bubbleText">ready?</span></div>
+      </div>
+      <p class="breath-step" id="breathStep">Starting in a moment…</p>
+    </section>
+
+    <section class="hug" aria-labelledby="hug-h">
+      <h2 id="hug-h">Need a hug?</h2>
+      <p class="sub">Press as many times as you need. There's no limit.</p>
+      <button class="hug-btn" id="hugBtn">Send me a hug</button>
+      <p class="hug-count" id="hugCount">0 hugs delivered</p>
+      <p class="hug-note" id="hugNote" aria-live="polite"></p>
+    </section>
+
+    <footer>
+      <p class="big">Today was hard. You're still wonderful.</p>
+      <p class="sig">I'm always one text away. Always.</p>
+      <button class="again" id="again">Read the letter again</button>
+    </footer>
+  </div>
+</main>
+
+<script>
+(() => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Floating hearts canvas ---------- */
+  const canvas = document.getElementById('sky');
+  const ctx = canvas.getContext('2d');
+  const colors = ['#E04F67', '#F07A8C', '#DE9A78', '#FFFFFF'];
+  let W = 0, H = 0, dpr = 1;
+  const hearts = [];
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function drawHeart(x, y, s, rot, color, alpha) {
+    ctx.save();
+    ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s / 16, s / 16);
+    ctx.globalAlpha = alpha; ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, 5);
+    ctx.bezierCurveTo(-14, -4, -8, -16, 0, -8);
+    ctx.bezierCurveTo(8, -16, 14, -4, 0, 5);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function ambient() {
+    return { x: Math.random() * W, y: H + 20, vx: (Math.random() - .5) * .3, vy: -(.3 + Math.random() * .6),
+             s: 8 + Math.random() * 14, rot: (Math.random() - .5) * .6, vr: (Math.random() - .5) * .01,
+             color: colors[Math.floor(Math.random() * colors.length)], alpha: .25 + Math.random() * .3, life: Infinity, g: 0 };
+  }
+
+  function burst(x, y, n = 26) {
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 5;
+      hearts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 3, s: 10 + Math.random() * 16,
+                    rot: (Math.random() - .5), vr: (Math.random() - .5) * .1,
+                    color: colors[Math.floor(Math.random() * 3)], alpha: 1, life: 70 + Math.random() * 40, g: .12 });
+    }
+  }
+
+  if (!reduceMotion) {
+    for (let i = 0; i < 18; i++) { const h = ambient(); h.y = Math.random() * H; hearts.push(h); }
+    (function tick() {
+      ctx.clearRect(0, 0, W, H);
+      let ambientCount = 0;
+      for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i];
+        h.vy += h.g; h.x += h.vx; h.y += h.vy; h.rot += h.vr;
+        if (h.life !== Infinity) { h.life--; h.alpha = Math.max(0, Math.min(1, h.life / 40)); h.vx *= .98; }
+        else ambientCount++;
+        if (h.life <= 0 || h.y < -40) { hearts.splice(i, 1); continue; }
+        drawHeart(h.x, h.y, h.s, h.rot, h.color, h.alpha);
+      }
+      if (ambientCount < 18 && Math.random() < .05) hearts.push(ambient());
+      requestAnimationFrame(tick);
+    })();
+  }
+
+  /* ---------- Envelope → letter ---------- */
+  const envelope = document.getElementById('envelope');
+  const hint = document.getElementById('hint');
+  const letterWrap = document.getElementById('letterWrap');
+  const paper = document.getElementById('paper');
+  const more = document.getElementById('more');
+  let opened = false;
+
+  envelope.addEventListener('click', () => {
+    if (opened) return;
+    opened = true;
+    envelope.classList.add('open');
+    envelope.disabled = true;
+    hint.textContent = 'opening…';
+    const r = envelope.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height * .4, 34);
+
+    setTimeout(() => {
+      letterWrap.hidden = false;
+      paper.classList.add('show');
+      letterWrap.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      hint.textContent = 'scroll down ↓';
+    }, reduceMotion ? 0 : 1100);
+
+    setTimeout(() => {
+      more.hidden = false;
+      more.classList.add('reveal');
+      startBreathing();
+    }, reduceMotion ? 0 : 7800);
+  });
+
+  document.getElementById('again').addEventListener('click', () => {
+    paper.classList.remove('show');
+    void paper.offsetWidth;
+    paper.classList.add('show');
+    letterWrap.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- Flip cards ---------- */
+  const notes = [
+    ['Bad days are just days', "This one will end, and tomorrow is a fresh page. I'll be there for both."],
+    ['You did enough today', 'Getting through a hard day counts. It counts a lot, actually.'],
+    ['About your smile', "Still my favourite thing to see. Even the tired, sleepy version."],
+    ["You're not alone", "Whatever it is, we carry it together. Call me, text me, rant to me."],
+    ['Be gentle with you', "Talk to yourself the way you'd talk to someone you love. Because I love you."],
+    ["I'm proud of you", 'For every small thing you did today that nobody else noticed.']
+  ];
+  const cardsEl = document.getElementById('cards');
+  notes.forEach(([front, back]) => {
+    const b = document.createElement('button');
+    b.className = 'card';
+    b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = `<span class="card-inner">
+        <span class="face front"><span class="label"></span><span class="tap">tap to open</span></span>
+        <span class="face back"></span></span>`;
+    b.querySelector('.label').textContent = front;
+    b.querySelector('.back').textContent = back;
+    b.addEventListener('click', (e) => {
+      const flipped = b.classList.toggle('flipped');
+      b.setAttribute('aria-pressed', String(flipped));
+      if (flipped) burst(e.clientX || W / 2, e.clientY || H / 2, 10);
+    });
+    cardsEl.appendChild(b);
+  });
+
+  /* ---------- Breathing bubble ---------- */
+  const bubble = document.getElementById('bubble');
+  const bubbleText = document.getElementById('bubbleText');
+  const breathStep = document.getElementById('breathStep');
+  const steps = [
+    { cls: 'in', word: 'breathe in', note: 'Slowly, through your nose…', ms: 4000 },
+    { cls: 'hold', word: 'hold', note: 'Hold it gently…', ms: 3000 },
+    { cls: '', word: 'let go', note: 'And let the whole day out…', ms: 5000 }
+  ];
+  let breathing = false;
+  function startBreathing() {
+    if (breathing) return;
+    breathing = true;
+    let i = 0;
+    (function next() {
+      const s = steps[i % steps.length];
+      bubble.className = 'bubble' + (s.cls ? ' ' + s.cls : '');
+      bubbleText.textContent = s.word;
+      breathStep.textContent = s.note;
+      i++;
+      setTimeout(next, s.ms);
+    })();
+  }
+
+  /* ---------- Hug button ---------- */
+  const hugLines = [
+    'Squeezing you right now.',
+    'That one was a long one.',
+    "You're safe here. Take your time.",
+    'Forehead kiss included, free of charge.',
+    "Okay this one's extra tight.",
+    'I miss you. Hug received?',
+    "You're doing so much better than you think.",
+    'Infinite refills. Keep pressing.',
+    'Wrapped in a blanket and a hug. Best combo.',
+    'Pretend my chin is on your head right now.'
+  ];
+  let hugs = 0;
+  const hugBtn = document.getElementById('hugBtn');
+  const hugCount = document.getElementById('hugCount');
+  const hugNote = document.getElementById('hugNote');
+  hugBtn.addEventListener('click', () => {
+    hugs++;
+    hugCount.textContent = `${hugs} ${hugs === 1 ? 'hug' : 'hugs'} delivered`;
+    hugNote.textContent = hugLines[(hugs - 1) % hugLines.length];
+    hugNote.classList.remove('pop'); void hugNote.offsetWidth; hugNote.classList.add('pop');
+    const r = hugBtn.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height / 2, 30);
+    if (navigator.vibrate) { try { navigator.vibrate(30); } catch (_) {} }
+  });
+})();
+</script>
+</body>
+</html>
